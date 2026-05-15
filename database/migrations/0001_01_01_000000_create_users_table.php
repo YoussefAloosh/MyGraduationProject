@@ -23,10 +23,10 @@ return new class extends Migration {
 
             $table->string('otp_code')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
-            $table->unsignedTinyInteger('otp_attempts')->default(0);
+            $table->unsignedTinyInteger('otp_attempts')->default(0)->nullable();
             $table->timestamp('otp_locked_until')->nullable();
 
-            $table->rememberToken();
+            $table->rememberToken()->nullable();
             $table->timestamps();
         });
 

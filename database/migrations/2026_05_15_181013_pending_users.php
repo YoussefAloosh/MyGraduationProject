@@ -17,9 +17,11 @@ return new class extends Migration {
             $table->string('password');
 
             // Verification
-            $table->string('verification_code');
-            $table->timestamp('verification_code_expires_at');
-            $table->unsignedTinyInteger('verification_attempts')->default(0);
+            
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('verification_code')->nullable();
+            $table->timestamp('verification_code_expires_at')->nullable();
+            $table->unsignedTinyInteger('verification_attempts')->default(0)->nullable();
 
             $table->timestamps();
         });

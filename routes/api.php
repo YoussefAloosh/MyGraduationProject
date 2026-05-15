@@ -57,6 +57,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Roles - admin only
     Route::apiResource('roles', RoleController::class)
         ->middleware('role:admin');
+
+
     Route::get('roles/{role}/matrix', [RoleController::class, 'matrix'])
         ->middleware('role:admin');
     Route::post('roles/{role}/sync-permissions', [RoleController::class, 'syncPermissions'])
@@ -67,3 +69,4 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('role:admin');
 
 });
+

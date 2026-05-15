@@ -26,8 +26,8 @@ class User extends Authenticatable
         'otp_expires_at',
         'otp_attempts',
         'otp_locked_until',
-        provider,
-        provider_id
+        'provider',
+        'provider_id'
     ];
 
     /**
