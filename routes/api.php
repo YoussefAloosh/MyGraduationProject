@@ -70,3 +70,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
+Route::get('/role',[RoleController::class,'all']);
+

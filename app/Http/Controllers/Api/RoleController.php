@@ -35,8 +35,8 @@ class RoleController extends Controller
     // جلب الـ Matrix (جداول × صلاحيات) لدور معين
     public function matrix(Role $role)
     {
-        $allPermissions    = Permission::all();
-        $rolePermissions   = $role->permissions->pluck('name')->toArray();
+        $allPermissions = Permission::all();
+        $rolePermissions = $role->permissions->pluck('name')->toArray();
 
         // تجميع الصلاحيات حسب الجدول
         $matrix = [];
@@ -46,7 +46,7 @@ class RoleController extends Controller
         }
 
         return response()->json([
-            'role'   => $role->name,
+            'role' => $role->name,
             'matrix' => $matrix,
         ]);
     }
@@ -62,8 +62,18 @@ class RoleController extends Controller
 
         return response()->json([
             'message' => 'Permissions updated',
-            'role'    => $role->load('permissions'),
+            'role' => $role->load('permissions'),
         ]);
     }
+
+    public function all()
+    {
+        $role = Role::all();
+        return response()->json([
+            'message' => 'The Role is ',
+            'role' => $role,
+        ]);
+    }
+
 }
 
