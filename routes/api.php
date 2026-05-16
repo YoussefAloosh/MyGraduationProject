@@ -17,7 +17,7 @@ use App\Http\Controllers\Api\UserController;
 Route::prefix('auth')->group(function () {
 
     // Register
-    Route::post('/register', [RegisterController::class, 'register']);
+    Route::post('register', [RegisterController::class, 'register']);
     Route::post('/verify-code', [VerificationController::class, 'verify'])
         ->middleware('verify.temp.token:email_verification');
 
