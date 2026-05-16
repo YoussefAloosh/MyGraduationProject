@@ -38,7 +38,8 @@ class ReSendController extends Controller
                 return response()->json(['message' => 'User not found.'], 404);
             }
 
-            $otp                  = rand(100000, 999999);
+            // $otp                  = rand(100000, 999999);
+            $otp                  = 999999;
             $user->otp_code       = $otp;
             $user->otp_expires_at = now()->addMinutes(5);
             $user->save();

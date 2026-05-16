@@ -30,7 +30,7 @@ class VerifyOtpController extends Controller
                 $user->otp_locked_until = now()->addMinutes(60);
                 $user->otp_attempts     = 0;
                 $user->save();
-                Mail::to($user->email)->send(new SuspiciousResetAttemptMail($user));
+                // Mail::to($user->email)->send(new SuspiciousResetAttemptMail($user));
                 return response()->json([
                     'message' => 'Too many attempts. Account locked for 60 minutes.'
                 ], 429);

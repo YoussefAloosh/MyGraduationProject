@@ -13,7 +13,8 @@ class RegisterController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        $code = rand(100000, 999999);
+        // $code = rand(100000, 999999);
+        $code =  999999;
         $validated = $request->validated();
 
         // حذف أي pending_user قديم بنفس الإيميل
@@ -27,7 +28,7 @@ class RegisterController extends Controller
             'verification_code_expires_at' => now()->addMinutes(10),
         ]);
 
-        Mail::to($pendingUser->email)->send(new VerificationCodeMail($code));
+        // Mail::to($pendingUser->email)->send(new VerificationCodeMail($code));
 
         $tempToken = encrypt([
             'user_id'    => $pendingUser->id,

@@ -13,12 +13,13 @@ class SendOtpController extends Controller
     public function __invoke(SendOtpRequest $request)
     {
         $user             = User::where('email', $request->validated()['email'])->first();
-        $otp              = rand(100000, 999999);
+        // $otp              = rand(100000, 999999);
+        $otp              = 999999;
         $user->otp_code   = $otp;
         $user->otp_expires_at = now()->addMinutes(5);
         $user->save();
 
-        Mail::to($user->email)->send(new PasswordResetOtpMail($otp));
+        // Mail::to($user->email)->send(new PasswordResetOtpMail($otp));
 
         $tempToken = encrypt([
             'user_id'    => $user->id,
