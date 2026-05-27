@@ -18,6 +18,13 @@ use App\Http\Controllers\Api\Articles\ArticleController as AppArticleController;
 use App\Http\Controllers\Api\Comments\CommentController;
 use App\Http\Controllers\Api\Reactions\ReactionController;
 use App\Http\Controllers\Api\Emergency\SosController;
+use App\Http\Controllers\Api\Emergency\MembershipController;
+use App\Http\Controllers\Api\Emergency\NotificationController;
+use App\Http\Controllers\Api\Emergency\EmergencyCaseController;
+use App\Http\Controllers\Api\Emergency\AppChatController;
+use App\Http\Controllers\Api\Emergency\AppRatingController;
+use App\Http\Controllers\Api\Emergency\AppReportController;
+use App\Http\Controllers\Api\AppRoleRequestController;
 
 // Dashboard
 use App\Http\Controllers\Dashboard\UserController;
@@ -72,6 +79,33 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('emergency/sos', [SosController::class, 'sos']);
     Route::post('emergency/cases/{emergency}/retry', [SosController::class, 'retry']);
+
+    // ─── App Emergency (Trusted role required) ────────────────────────────────
+    Route::middleware('role:trusted')->group(function () {
+        // Membership
+        Route::post('emergency/profile/home-location', [MembershipController::class, 'setHomeLocation']);
+        Route::get('emergency/my-group',               [MembershipController::class, 'myGroup']);
+
+        // Notifications
+        Route::get('emergency/notifications',                            [NotificationController::class, 'index']);
+        Route::post('emergency/notifications/{notification}/respond',   [NotificationController::class, 'respond']);
+
+        // Cases
+        Route::get('emergency/cases/{emergency}',           [EmergencyCaseController::class, 'show']);
+        Route::post('emergency/cases/{emergency}/resolve',  [EmergencyCaseController::class, 'resolve']);
+
+        // Group Chat
+        Route::get('emergency/groups/{emergencyGroup}/chat',   [AppChatController::class, 'index']);
+        Route::post('emergency/groups/{emergencyGroup}/chat',  [AppChatController::class, 'store']);
+
+        // Ratings & Reports
+        Route::post('emergency/ratings', [AppRatingController::class, 'store']);
+        Route::post('emergency/reports',  [AppReportController::class, 'store']);
+
+        // Role Requests
+        Route::post('role-requests',     [AppRoleRequestController::class, 'store']);
+        Route::get('role-requests/my',   [AppRoleRequestController::class, 'my']);
+    });
 
     // ─── Dashboard ────────────────────────────────────────────────────────────
     Route::prefix('dashboard')->group(function () {
