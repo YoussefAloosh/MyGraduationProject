@@ -53,10 +53,13 @@ Route::prefix('auth')->group(function () {
     Route::get('me', MeController::class)->middleware('auth:sanctum');
     Route::post('resend', [ReSendController::class, 'resendOtp'])
         ->middleware('verify.temp.token:email_verification,reset_password_request');
+
     Route::prefix('password')->group(function () {
         Route::post('forgot', SendOtpController::class);
+
         Route::post('verify', VerifyOtpController::class)
             ->middleware('verify.temp.token:reset_password_request');
+
         Route::post('reset', ResetPasswordController::class)
             ->middleware('verify.temp.token:reset_password_confirm');
     });
@@ -80,31 +83,35 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('emergency/sos', [SosController::class, 'sos']);
     Route::post('emergency/cases/{emergency}/retry', [SosController::class, 'retry']);
 
-    // ─── App Emergency (Trusted role required) ────────────────────────────────
+    // ─── Trusted-only App routes ──────────────────────────────────────────────
     Route::middleware('role:trusted')->group(function () {
-        // Membership
+
+        // Articles
+        Route::post('articles', [AppArticleController::class, 'store']);
+
+        // Emergency — Membership
         Route::post('emergency/profile/home-location', [MembershipController::class, 'setHomeLocation']);
-        Route::get('emergency/my-group',               [MembershipController::class, 'myGroup']);
+        Route::get('emergency/my-group', [MembershipController::class, 'myGroup']);
 
         // Notifications
-        Route::get('emergency/notifications',                            [NotificationController::class, 'index']);
-        Route::post('emergency/notifications/{notification}/respond',   [NotificationController::class, 'respond']);
+        Route::get('emergency/notifications', [NotificationController::class, 'index']);
+        Route::post('emergency/notifications/{notification}/respond', [NotificationController::class, 'respond']);
 
         // Cases
-        Route::get('emergency/cases/{emergency}',           [EmergencyCaseController::class, 'show']);
-        Route::post('emergency/cases/{emergency}/resolve',  [EmergencyCaseController::class, 'resolve']);
+        Route::get('emergency/cases/{emergency}', [EmergencyCaseController::class, 'show']);
+        Route::post('emergency/cases/{emergency}/resolve', [EmergencyCaseController::class, 'resolve']);
 
         // Group Chat
-        Route::get('emergency/groups/{emergencyGroup}/chat',   [AppChatController::class, 'index']);
-        Route::post('emergency/groups/{emergencyGroup}/chat',  [AppChatController::class, 'store']);
+        Route::get('emergency/groups/{emergencyGroup}/chat', [AppChatController::class, 'index']);
+        Route::post('emergency/groups/{emergencyGroup}/chat', [AppChatController::class, 'store']);
 
         // Ratings & Reports
         Route::post('emergency/ratings', [AppRatingController::class, 'store']);
-        Route::post('emergency/reports',  [AppReportController::class, 'store']);
+        Route::post('emergency/reports', [AppReportController::class, 'store']);
 
         // Role Requests
-        Route::post('role-requests',     [AppRoleRequestController::class, 'store']);
-        Route::get('role-requests/my',   [AppRoleRequestController::class, 'my']);
+        Route::post('role-requests', [AppRoleRequestController::class, 'store']);
+        Route::get('role-requests/my', [AppRoleRequestController::class, 'my']);
     });
 
     // ─── Dashboard ────────────────────────────────────────────────────────────

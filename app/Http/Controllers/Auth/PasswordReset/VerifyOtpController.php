@@ -57,6 +57,7 @@ class VerifyOtpController extends Controller
         $user->otp_expires_at   = null;
         $user->save();
 
+
         $newTempToken = encrypt([
             'user_id'    => $user->id,
             'purpose'    => 'reset_password_confirm',

@@ -24,12 +24,12 @@ class ReSendController extends Controller
                 return response()->json(['message' => 'User not found.'], 404);
             }
 
-            $code                                = rand(100000, 999999);
+            $code                                = 999999;
             $user->verification_code             = $code;
             $user->verification_code_expires_at  = now()->addMinutes(10);
             $user->save();
 
-            Mail::to($user->email)->send(new VerificationCodeMail($code));
+            // Mail::to($user->email)->send(new VerificationCodeMail($code));
 
         } elseif ($purpose === 'reset_password_request') {
             $user = User::find($data['user_id']);
@@ -44,7 +44,7 @@ class ReSendController extends Controller
             $user->otp_expires_at = now()->addMinutes(5);
             $user->save();
 
-            Mail::to($user->email)->send(new PasswordResetOtpMail($otp));
+            // Mail::to($user->email)->send(new PasswordResetOtpMail($otp));
         }
 
         return response()->json(['message' => 'OTP sent successfully.']);

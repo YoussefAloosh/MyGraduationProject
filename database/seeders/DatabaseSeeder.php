@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             AdminSeeder::class,
             RolePermissionSeeder::class,
+            ArticleSeeder::class,
             EmergencyGroupSeeder::class,
             GroupMemberSeeder::class,
             PendingGroupRequestSeeder::class,
