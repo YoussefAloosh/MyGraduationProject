@@ -27,6 +27,19 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             AdminSeeder::class,
+            RolePermissionSeeder::class,
+            EmergencyGroupSeeder::class,
+            GroupMemberSeeder::class,
+            PendingGroupRequestSeeder::class,
+            RoleRequestSeeder::class,
+            EmergencySeeder::class,
+            GroupChatMessageSeeder::class,
+            RatingSeeder::class,
+            ReportSeeder::class,
+            UserBanSeeder::class,
+            ReportSeeder::class,
+            UserBanSeeder::class,
+            AdminActionLogSeeder::class,
         ]);
 
     }

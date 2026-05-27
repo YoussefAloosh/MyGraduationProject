@@ -12,7 +12,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
@@ -20,13 +20,15 @@ class LoginController extends Controller
             return response()->json(['message' => 'Invalid email or password.'], 401);
         }
 
-        $user  = Auth::user();
+        $user = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Login successfully.',
-            'user'    => new UserResource($user),
-            'token'   => $token,
+            'user' => new UserResource($user),
+            'token' => $token,
+            'roles' => $user->getRoleNames(),
+            'permissions' => $user->getAllPermissions()->pluck('name'),
         ]);
     }
 

@@ -58,7 +58,7 @@ class VerificationController extends Controller
             'password' => $pendingUser->password,
         ]);
 
-        $user->assignRole('user');
+        $user->assignRole('member');
 
         // حذف الـ pending
         $pendingUser->delete();

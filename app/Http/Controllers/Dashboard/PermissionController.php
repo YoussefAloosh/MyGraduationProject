@@ -1,14 +1,12 @@
 <?php
 
-// app/Http/Controllers/Api/PermissionController.php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-    // جلب كل الصلاحيات مجمعة حسب الجدول
     public function index()
     {
         $permissions = Permission::all();
