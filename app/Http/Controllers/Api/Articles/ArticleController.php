@@ -58,15 +58,10 @@ class ArticleController extends Controller
 
         $article = Article::create($data);
 
-        return response()->json([
-            'message' => 'Article submitted successfully. It will be reviewed before publishing.',
-            'data'    => [
-                'id'     => $article->id,
-                'title'  => $article->title,
-                'status' => $article->status,
-                'slug'   => $article->slug,
-            ],
-        ], 201);
+        return (new ArticleResource($article->load('user')))
+            ->additional(['message' => 'Article submitted successfully. It will be reviewed before publishing.'])
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -95,14 +90,8 @@ class ArticleController extends Controller
 
         $article->update($data);
 
-        return response()->json([
-            'message' => 'Article updated. It is now pending review again.',
-            'data'    => [
-                'id'     => $article->id,
-                'title'  => $article->title,
-                'status' => $article->status,
-            ],
-        ]);
+        return (new ArticleResource($article->fresh(['user'])->loadCount(['comments', 'reactions'])))
+            ->additional(['message' => 'Article updated. It is now pending review again.']);
     }
 
     /**

@@ -25,6 +25,8 @@ use App\Http\Controllers\Api\Emergency\AppChatController;
 use App\Http\Controllers\Api\Emergency\AppRatingController;
 use App\Http\Controllers\Api\Emergency\AppReportController;
 use App\Http\Controllers\Api\AppRoleRequestController;
+use App\Http\Controllers\Api\AppProfileController;
+use App\Http\Controllers\Api\Reactions\ReactionListController;
 
 // Dashboard
 use App\Http\Controllers\Dashboard\UserController;
@@ -71,6 +73,9 @@ Route::get('articles/{article}', [AppArticleController::class, 'show'])
     ->where('article', '[0-9]+');
 Route::get('articles/{article}/comments', [CommentController::class, 'index'])
     ->where('article', '[0-9]+');
+Route::get('articles/{article}/reactions', [ReactionListController::class, 'forArticle'])
+    ->where('article', '[0-9]+');
+Route::get('comments/{comment}/reactions', [ReactionListController::class, 'forComment']);
 
 // ─── Authenticated App ────────────────────────────────────────────────────────
 Route::middleware('auth:sanctum')->group(function () {
@@ -81,6 +86,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('comments/{comment}',  [CommentController::class, 'update']);
     Route::delete('comments/{comment}', [CommentController::class, 'destroy']);
     Route::post('reactions', [ReactionController::class, 'store']);
+
+    // Profile — my own content
+    Route::get('profile/reactions', [AppProfileController::class, 'reactions']);
+    Route::get('profile/comments',  [AppProfileController::class, 'comments']);
 
     Route::post('emergency/sos', [SosController::class, 'sos']);
     Route::post('emergency/cases/{emergency}/retry', [SosController::class, 'retry']);
