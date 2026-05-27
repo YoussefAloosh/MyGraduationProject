@@ -27,9 +27,8 @@ class ArticlePolicy
 
     public function update(User $user, Article $article): bool
     {
-        if ($user->id === $article->user_id && $article->status === 'pending') {
-            return true;
-        }
+        // Owner can edit at any status (will reset to pending)
+        if ($user->id === $article->user_id) return true;
         return $user->hasAnyRole(['admin', 'moderator']);
     }
 

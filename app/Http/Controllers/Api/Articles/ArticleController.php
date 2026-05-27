@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Api\Articles;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Article\StoreArticleRequest;
+use App\Http\Requests\Article\UpdateArticleRequest;
 use App\Http\Resources\Article\ArticleCollection;
 use App\Http\Resources\Article\ArticleResource;
 use App\Models\Article;
 use App\Services\Articles\ArticleService;
+use App\Traits\MangesCloudinaryFiles;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
+    use MangesCloudinaryFiles;
     public function __construct(
         private readonly ArticleService $articleService,
     ) {}
@@ -64,5 +67,58 @@ class ArticleController extends Controller
                 'slug'   => $article->slug,
             ],
         ], 201);
+    }
+
+    /**
+     * PUT/PATCH /api/articles/{article}
+     * Owner edits their own article — always resets status to "pending".
+     */
+    public function update(UpdateArticleRequest $request, Article $article)
+    {
+        $this->authorize('update', $article);
+
+        $data = array_filter([
+            'title'   => $request->title,
+            'content' => $request->content,
+            'status'  => 'pending',
+        ], fn ($v) => $v !== null);
+
+        if ($request->hasFile('cover_image')) {
+            // Delete old image from Cloudinary if exists
+            if ($article->cover_image_public_id) {
+                $this->deleteImage($article->cover_image_public_id);
+            }
+            $uploaded                       = $this->uploadImage($request->file('cover_image'), 'articles');
+            $data['cover_image']            = $uploaded['url'];
+            $data['cover_image_public_id']  = $uploaded['public_id'];
+        }
+
+        $article->update($data);
+
+        return response()->json([
+            'message' => 'Article updated. It is now pending review again.',
+            'data'    => [
+                'id'     => $article->id,
+                'title'  => $article->title,
+                'status' => $article->status,
+            ],
+        ]);
+    }
+
+    /**
+     * DELETE /api/articles/{article}
+     * Owner deletes their own article.
+     */
+    public function destroy(Article $article)
+    {
+        $this->authorize('delete', $article);
+
+        if ($article->cover_image_public_id) {
+            $this->deleteImage($article->cover_image_public_id);
+        }
+
+        $article->delete();
+
+        return response()->json(['message' => 'Article deleted successfully.']);
     }
 }

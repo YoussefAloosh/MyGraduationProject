@@ -77,6 +77,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('articles/{article}/comments', [CommentController::class, 'store'])
         ->where('article', '[0-9]+');
+    Route::put('comments/{comment}',    [CommentController::class, 'update']);
+    Route::patch('comments/{comment}',  [CommentController::class, 'update']);
     Route::delete('comments/{comment}', [CommentController::class, 'destroy']);
     Route::post('reactions', [ReactionController::class, 'store']);
 
@@ -87,7 +89,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:trusted')->group(function () {
 
         // Articles
-        Route::post('articles', [AppArticleController::class, 'store']);
+        Route::post('articles',            [AppArticleController::class, 'store']);
+        Route::put('articles/{article}',   [AppArticleController::class, 'update'])->where('article', '[0-9]+');
+        Route::patch('articles/{article}', [AppArticleController::class, 'update'])->where('article', '[0-9]+');
+        Route::delete('articles/{article}',[AppArticleController::class, 'destroy'])->where('article', '[0-9]+');
 
         // Emergency — Membership
         Route::post('emergency/profile/home-location', [MembershipController::class, 'setHomeLocation']);

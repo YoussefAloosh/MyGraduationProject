@@ -44,6 +44,20 @@ class CommentController extends Controller
         return new CommentResource($comment->load('user'));
     }
 
+    // تعديل تعليق
+    public function update(Request $request, Comment $comment)
+    {
+        $this->authorize('update', $comment);
+
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        $comment->update(['content' => $request->content]);
+
+        return new CommentResource($comment->load('user'));
+    }
+
     // حذف تعليق
     public function destroy(Comment $comment)
     {
