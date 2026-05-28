@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('cover_image_public_id')->nullable(); 
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamp('published_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

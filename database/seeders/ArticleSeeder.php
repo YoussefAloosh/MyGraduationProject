@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Reaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ArticleSeeder extends Seeder
 {
@@ -97,10 +98,11 @@ class ArticleSeeder extends Seeder
         ];
 
         foreach ($articles as $data) {
-            Article::firstOrCreate(
-                ['title' => $data['title']],
-                $data
-            );
+            if (Article::where('title', $data['title'])->exists()) {
+                continue;
+            }
+            $base = Str::slug($data['title']) ?: 'article';
+            Article::create(array_merge($data, ['slug' => $base . '-' . uniqid()]));
         }
 
         // ─── Add sample comments & reactions ──────────────────────────────────

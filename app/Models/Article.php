@@ -30,7 +30,8 @@ class Article extends Model
     protected static function booted()
     {
         static::creating(function ($article) {
-            $article->slug = Str::slug($article->title) . '-' . uniqid();
+            $base = Str::slug($article->title) ?: 'article';
+            $article->slug = $base . '-' . uniqid();
         });
     }
 
