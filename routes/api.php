@@ -71,6 +71,8 @@ Route::prefix('auth')->group(function () {
 Route::get('articles', [AppArticleController::class, 'index']);
 Route::get('articles/{article}', [AppArticleController::class, 'show'])
     ->where('article', '[0-9]+');
+Route::get('users/{user}/articles', [AppArticleController::class, 'byUser'])
+    ->where('user', '[0-9]+');
 Route::get('articles/{article}/comments', [CommentController::class, 'index'])
     ->where('article', '[0-9]+');
 Route::get('articles/{article}/reactions', [ReactionListController::class, 'forArticle'])

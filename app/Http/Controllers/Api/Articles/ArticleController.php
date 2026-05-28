@@ -26,6 +26,23 @@ class ArticleController extends Controller
         return new ArticleCollection($articles);
     }
 
+    /**
+     * GET /api/users/{user}/articles
+     * Approved articles published by a specific user (public).
+     */
+    public function byUser(Request $request, int $userId)
+    {
+        $articles = Article::approved()
+            ->where('user_id', $userId)
+            ->with('user')
+            ->withCount(['comments', 'reactions'])
+            ->when($request->search, fn ($q) => $q->where('title', 'like', "%{$request->search}%"))
+            ->latest()
+            ->paginate($request->integer('per_page', 10));
+
+        return new ArticleCollection($articles);
+    }
+
     public function show(Article $article)
     {
         $this->authorize('view', $article);
