@@ -90,6 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Profile — my own content
     Route::get('profile/reactions', [AppProfileController::class, 'reactions']);
     Route::get('profile/comments',  [AppProfileController::class, 'comments']);
+    Route::get('profile/articles',  [AppProfileController::class, 'articles'])->middleware('role:trusted');
 
     // ─── Trusted-only App routes ──────────────────────────────────────────────
     Route::middleware('role:trusted')->group(function () {

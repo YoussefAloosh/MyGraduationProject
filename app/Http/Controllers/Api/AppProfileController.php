@@ -3,12 +3,30 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Article\ArticleCollection;
 use App\Http\Resources\Comment\CommentResource;
 use App\Http\Resources\Reaction\ReactionResource;
+use App\Models\Article;
 use Illuminate\Http\Request;
 
 class AppProfileController extends Controller
 {
+    /**
+     * GET /api/profile/articles
+     * All articles submitted by the authenticated user (pending, approved, rejected).
+     * Optional filter: ?status=pending|approved|rejected
+     */
+    public function articles(Request $request)
+    {
+        $articles = Article::where('user_id', $request->user()->id)
+            ->when($request->status, fn ($q, $s) => $q->where('status', $s))
+            ->withCount(['comments', 'reactions'])
+            ->latest()
+            ->paginate($request->integer('per_page', 15));
+
+        return new ArticleCollection($articles);
+    }
+
     /**
      * GET /api/profile/reactions
      * All reactions the authenticated user has made.
