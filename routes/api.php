@@ -91,11 +91,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('profile/reactions', [AppProfileController::class, 'reactions']);
     Route::get('profile/comments',  [AppProfileController::class, 'comments']);
 
-    Route::post('emergency/sos', [SosController::class, 'sos']);
-    Route::post('emergency/cases/{emergency}/retry', [SosController::class, 'retry']);
-
     // ─── Trusted-only App routes ──────────────────────────────────────────────
     Route::middleware('role:trusted')->group(function () {
+
+        // SOS
+        Route::post('emergency/sos', [SosController::class, 'sos']);
+        Route::post('emergency/cases/{emergency}/retry', [SosController::class, 'retry']);
 
         // Articles
         Route::post('articles',            [AppArticleController::class, 'store']);
