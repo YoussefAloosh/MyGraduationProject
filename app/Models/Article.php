@@ -6,11 +6,12 @@ use App\Traits\MangesCloudinaryFiles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Article extends Model
 {
-    use MangesCloudinaryFiles;
+    use MangesCloudinaryFiles, SoftDeletes;
     protected $fillable = [
         'user_id',
         'title',

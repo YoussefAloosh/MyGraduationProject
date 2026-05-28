@@ -38,6 +38,18 @@ class ArticlePolicy
         return $user->hasAnyRole(['admin', 'moderator']);
     }
 
+    public function restore(User $user, Article $article): bool
+    {
+        if ($user->id === $article->user_id) return true;
+        return $user->hasAnyRole(['admin', 'moderator']);
+    }
+
+    public function forceDelete(User $user, Article $article): bool
+    {
+        if ($user->id === $article->user_id) return true;
+        return $user->hasAnyRole(['admin', 'moderator']);
+    }
+
     public function approve(User $user): bool
     {
         return $user->hasAnyRole(['creator', 'moderator', 'admin']);

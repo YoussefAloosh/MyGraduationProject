@@ -96,18 +96,63 @@ class ArticleController extends Controller
 
     /**
      * DELETE /api/articles/{article}
-     * Owner deletes their own article.
+     * Soft-delete: moves article to trash (recoverable).
      */
     public function destroy(Article $article)
     {
         $this->authorize('delete', $article);
 
+        $article->delete();
+
+        return response()->json(['message' => 'Article moved to trash.']);
+    }
+
+    /**
+     * GET /api/articles/trash
+     * List the authenticated user's own trashed articles.
+     */
+    public function trash(Request $request)
+    {
+        $articles = Article::onlyTrashed()
+            ->where('user_id', $request->user()->id)
+            ->latest('deleted_at')
+            ->paginate(15);
+
+        return new ArticleCollection($articles);
+    }
+
+    /**
+     * POST /api/articles/{article}/restore
+     * Restore a soft-deleted article back to its previous status.
+     */
+    public function restore(int $id)
+    {
+        $article = Article::onlyTrashed()->findOrFail($id);
+
+        $this->authorize('restore', $article);
+
+        $article->restore();
+
+        return (new ArticleResource($article->fresh(['user'])))
+            ->additional(['message' => 'Article restored successfully.']);
+    }
+
+    /**
+     * DELETE /api/articles/{article}/force
+     * Permanently deletes the article and its Cloudinary image.
+     */
+    public function forceDestroy(int $id)
+    {
+        $article = Article::onlyTrashed()->findOrFail($id);
+
+        $this->authorize('forceDelete', $article);
+
         if ($article->cover_image_public_id) {
             $this->deleteImage($article->cover_image_public_id);
         }
 
-        $article->delete();
+        $article->forceDelete();
 
-        return response()->json(['message' => 'Article deleted successfully.']);
+        return response()->json(['message' => 'Article permanently deleted.']);
     }
 }

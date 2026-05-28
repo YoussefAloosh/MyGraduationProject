@@ -99,10 +99,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('emergency/cases/{emergency}/retry', [SosController::class, 'retry']);
 
         // Articles
-        Route::post('articles',            [AppArticleController::class, 'store']);
-        Route::put('articles/{article}',   [AppArticleController::class, 'update'])->where('article', '[0-9]+');
-        Route::patch('articles/{article}', [AppArticleController::class, 'update'])->where('article', '[0-9]+');
-        Route::delete('articles/{article}',[AppArticleController::class, 'destroy'])->where('article', '[0-9]+');
+        Route::post('articles',                          [AppArticleController::class, 'store']);
+        Route::put('articles/{article}',                 [AppArticleController::class, 'update'])->where('article', '[0-9]+');
+        Route::patch('articles/{article}',               [AppArticleController::class, 'update'])->where('article', '[0-9]+');
+        Route::delete('articles/{article}',              [AppArticleController::class, 'destroy'])->where('article', '[0-9]+');
+
+        // Articles — Trash
+        Route::get('articles/trash',                     [AppArticleController::class, 'trash']);
+        Route::post('articles/{id}/restore',             [AppArticleController::class, 'restore'])->where('id', '[0-9]+');
+        Route::delete('articles/{id}/force',             [AppArticleController::class, 'forceDestroy'])->where('id', '[0-9]+');
 
         // Emergency — Membership
         Route::post('emergency/profile/home-location', [MembershipController::class, 'setHomeLocation']);
