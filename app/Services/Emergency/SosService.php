@@ -23,7 +23,7 @@ class SosService
     {
         $this->ensureUserCanTriggerSos($reporter);
 
-        $group = $this->groupLocator->locate(
+        $group = $this->groupLocator->locateForEmergency(
             (float) $data['location_lat'],
             (float) $data['location_lng'],
         );

@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pending_group_id')->constrained('pending_group_requests')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->decimal('join_lat', 10, 7)->nullable();
+            $table->decimal('join_lng', 10, 7)->nullable();
             $table->timestamp('added_at')->useCurrent();
             $table->timestamps();
 

@@ -10,10 +10,14 @@ class PendingGroupUser extends Model
     protected $fillable = [
         'pending_group_id',
         'user_id',
+        'join_lat',
+        'join_lng',
         'added_at',
     ];
 
     protected $casts = [
+        'join_lat' => 'decimal:7',
+        'join_lng' => 'decimal:7',
         'added_at' => 'datetime',
     ];
 

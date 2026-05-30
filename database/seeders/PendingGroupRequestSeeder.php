@@ -77,6 +77,7 @@ class PendingGroupRequestSeeder extends Seeder
             $request = PendingGroupRequest::create([
                 'center_lat'              => $groupData['center_lat'],
                 'center_lng'              => $groupData['center_lng'],
+                'radius_km'               => 5.00,
                 'nearby_users_count'      => $groupData['nearby_users_count'],
                 'status'                  => $groupData['status'],
                 'submitted_to_manager_at' => $groupData['submitted_at'],
@@ -94,6 +95,8 @@ class PendingGroupRequestSeeder extends Seeder
                         'user_id'          => $user->id,
                     ],
                     [
+                        'join_lat' => $user->home_lat ?? $groupData['center_lat'],
+                        'join_lng' => $user->home_lng ?? $groupData['center_lng'],
                         'added_at' => now(),
                     ]
                 );

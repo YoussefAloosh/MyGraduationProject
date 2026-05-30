@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\EmergencyGroup;
 use App\Models\GroupMember;
 use App\Models\PendingGroupRequest;
+use App\Services\Emergency\PendingGroupService;
 use Illuminate\Http\Request;
 
 class PendingGroupController extends Controller
@@ -23,6 +24,7 @@ class PendingGroupController extends Controller
                 'id'                      => $r->id,
                 'center_lat'              => $r->center_lat,
                 'center_lng'              => $r->center_lng,
+                'radius_km'               => $r->radius_km ?? 5,
                 'nearby_users_count'      => $r->nearby_users_count,
                 'status'                  => $r->status,
                 'submitted_to_manager_at' => $r->submitted_to_manager_at?->format('Y-m-d H:i'),
@@ -31,8 +33,8 @@ class PendingGroupController extends Controller
                     'id'       => $pu->user->id,
                     'name'     => $pu->user->name,
                     'email'    => $pu->user->email,
-                    'home_lat' => $pu->user->home_lat,
-                    'home_lng' => $pu->user->home_lng,
+                    'join_lat' => $pu->join_lat ?? $pu->user->home_lat,
+                    'join_lng' => $pu->join_lng ?? $pu->user->home_lng,
                 ]),
             ]),
             'meta' => [
@@ -45,6 +47,16 @@ class PendingGroupController extends Controller
 
     public function approve(Request $request, PendingGroupRequest $pendingGroupRequest)
     {
+        if ($pendingGroupRequest->status === 'completed') {
+            return response()->json(['message' => 'This pending request is already closed.'], 422);
+        }
+
+        if ($pendingGroupRequest->nearby_users_count < PendingGroupService::MIN_MEMBERS_FOR_SUBMISSION) {
+            return response()->json([
+                'message' => 'Cannot approve: at least '.PendingGroupService::MIN_MEMBERS_FOR_SUBMISSION.' members required.',
+            ], 422);
+        }
+
         $request->validate([
             'name'      => 'required|string|max:255',
             'radius_km' => 'nullable|numeric|min:1|max:50',
@@ -54,7 +66,7 @@ class PendingGroupController extends Controller
             'name'       => $request->name,
             'center_lat' => $pendingGroupRequest->center_lat,
             'center_lng' => $pendingGroupRequest->center_lng,
-            'radius_km'  => $request->radius_km ?? 5,
+            'radius_km'  => $request->radius_km ?? $pendingGroupRequest->radius_km ?? 5,
             'is_active'  => true,
             'created_by' => auth()->id(),
         ]);

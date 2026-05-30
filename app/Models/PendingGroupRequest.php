@@ -10,15 +10,17 @@ class PendingGroupRequest extends Model
     protected $fillable = [
         'center_lat',
         'center_lng',
+        'radius_km',
         'nearby_users_count',
         'status',
         'submitted_to_manager_at',
     ];
 
     protected $casts = [
-        'center_lat'               => 'decimal:7',
-        'center_lng'               => 'decimal:7',
-        'submitted_to_manager_at'  => 'datetime',
+        'center_lat'              => 'decimal:7',
+        'center_lng'              => 'decimal:7',
+        'radius_km'               => 'decimal:2',
+        'submitted_to_manager_at' => 'datetime',
     ];
 
     // ─── Relations ────────────────────────────────────────

@@ -113,6 +113,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('articles/{id}/force',             [AppArticleController::class, 'forceDestroy'])->where('id', '[0-9]+');
 
         // Emergency — Membership
+        Route::post('emergency/groups/join', [MembershipController::class, 'join']);
         Route::post('emergency/profile/home-location', [MembershipController::class, 'setHomeLocation']);
         Route::get('emergency/my-group', [MembershipController::class, 'myGroup']);
 
